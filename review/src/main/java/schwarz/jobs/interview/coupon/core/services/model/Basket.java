@@ -2,8 +2,7 @@ package schwarz.jobs.interview.coupon.core.services.model;
 
 import java.math.BigDecimal;
 
-import javax.validation.constraints.NotNull;
-
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,8 +18,12 @@ public class Basket {
     private boolean applicationSuccessful;
 
     public void applyDiscount(final BigDecimal discount) {
-        this.applicationSuccessful = false;
+        if (discount == null) {
+            throw new IllegalArgumentException("Discount cannot be null");
+        }
         this.appliedDiscount = discount;
+        this.value = value.subtract(discount);
+        this.applicationSuccessful = true;
     }
 
 }
