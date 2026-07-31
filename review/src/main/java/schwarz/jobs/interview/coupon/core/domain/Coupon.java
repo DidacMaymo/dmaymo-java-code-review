@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,7 @@ import jakarta.persistence.Id;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "coupons")
 public class Coupon {
 
     @Id

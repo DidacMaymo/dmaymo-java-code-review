@@ -3,6 +3,7 @@ package schwarz.jobs.interview.coupon.core.services.model;
 import java.math.BigDecimal;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import lombok.Data;
 public class Basket {
 
     @NotNull
+    @PositiveOrZero
     private BigDecimal value;
 
     private BigDecimal appliedDiscount;

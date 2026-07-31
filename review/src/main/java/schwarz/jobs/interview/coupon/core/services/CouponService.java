@@ -1,9 +1,11 @@
 package schwarz.jobs.interview.coupon.core.services;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import schwarz.jobs.interview.coupon.web.dto.CouponRequestDTO;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CouponService {
 
     private final CouponRepository couponRepository;
@@ -27,19 +30,15 @@ public class CouponService {
 
         return getCoupon(code).map(coupon -> {
 
-            if (basket.getValue().doubleValue() >= 0) {
+            final BigDecimal minRequired = coupon.getMinBasketValue() != null
+                    ? coupon.getMinBasketValue()
+                    : BigDecimal.ZERO;
 
-                if (basket.getValue().doubleValue() > 0) {
+            final boolean qualifies = basket.getValue().compareTo(BigDecimal.ZERO) > 0
+                    && basket.getValue().compareTo(minRequired) >= 0;
 
-                    basket.applyDiscount(coupon.getDiscount());
-
-                } else if (basket.getValue().doubleValue() == 0) {
-                    return basket;
-                }
-
-            } else {
-                System.out.println("DEBUG: TRIED TO APPLY NEGATIVE DISCOUNT!");
-                throw new RuntimeException("Can't apply negative discounts");
+            if (qualifies) {
+                basket.applyDiscount(coupon.getDiscount());
             }
 
             return basket;

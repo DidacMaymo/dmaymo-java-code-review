@@ -47,44 +47,82 @@ public class CouponServiceTest {
     }
 
     @Test
-    public void test_apply_coupon_method() {
-
-        final Basket firstBasket = Basket.builder()
-            .value(BigDecimal.valueOf(100))
-            .build();
+    void should_apply_discount_when_basket_qualifies() {
+        final Basket basket = Basket.builder()
+                .value(BigDecimal.valueOf(100))
+                .build();
 
         when(couponRepository.findByCode("1111")).thenReturn(Optional.of(Coupon.builder()
-            .code("1111")
-            .discount(BigDecimal.TEN)
-            .minBasketValue(BigDecimal.valueOf(50))
-            .build()));
+                .code("1111")
+                .discount(BigDecimal.TEN)
+                .minBasketValue(BigDecimal.valueOf(50))
+                .build()));
 
-        Optional<Basket> optionalBasket = couponService.apply(firstBasket, "1111");
+        final Optional<Basket> optionalBasket = couponService.apply(basket, "1111");
 
         assertThat(optionalBasket).hasValueSatisfying(b -> {
             assertThat(b.getAppliedDiscount()).isEqualTo(BigDecimal.TEN);
             assertThat(b.isApplicationSuccessful()).isTrue();
         });
+    }
 
-        final Basket secondBasket = Basket.builder()
-            .value(BigDecimal.valueOf(0))
-            .build();
+    @Test
+    void should_not_apply_discount_when_basket_value_is_zero() {
+        final Basket basket = Basket.builder()
+                .value(BigDecimal.ZERO)
+                .build();
 
-        optionalBasket = couponService.apply(secondBasket, "1111");
+        when(couponRepository.findByCode("1111")).thenReturn(Optional.of(Coupon.builder()
+                .code("1111")
+                .discount(BigDecimal.TEN)
+                .minBasketValue(BigDecimal.valueOf(50))
+                .build()));
 
-        assertThat(optionalBasket).hasValueSatisfying(b -> {
-            assertThat(b).isEqualTo(secondBasket);
+        final Optional<Basket> result = couponService.apply(basket, "1111");
+
+        assertThat(result).hasValueSatisfying(b -> {
+            assertThat(b).isEqualTo(basket);
             assertThat(b.isApplicationSuccessful()).isFalse();
+            assertThat(b.getAppliedDiscount()).isNull();
         });
+    }
 
-        final Basket thirdBasket = Basket.builder()
-            .value(BigDecimal.valueOf(-1))
-            .build();
+    @Test
+    void should_not_apply_discount_when_basket_below_minimum() {
+        final Basket basket = Basket.builder()
+                .value(BigDecimal.valueOf(30))
+                .build();
 
-        assertThatThrownBy(() -> {
-            couponService.apply(thirdBasket, "1111");
-        }).isInstanceOf(RuntimeException.class)
-            .hasMessage("Can't apply negative discounts");
+        when(couponRepository.findByCode("1111")).thenReturn(Optional.of(Coupon.builder()
+                .code("1111")
+                .discount(BigDecimal.TEN)
+                .minBasketValue(BigDecimal.valueOf(50))
+                .build()));
+
+        final Optional<Basket> result = couponService.apply(basket, "1111");
+
+        assertThat(result).hasValueSatisfying(b -> {
+            assertThat(b.isApplicationSuccessful()).isFalse();
+            assertThat(b).isEqualTo(basket);
+            assertThat(b.getAppliedDiscount()).isNull();
+        });
+    }
+
+    @Test
+    void should_apply_discount_when_coupon_has_no_minimum() {
+        final Basket basket = Basket.builder()
+                .value(BigDecimal.valueOf(10))
+                .build();
+
+        when(couponRepository.findByCode("1111")).thenReturn(Optional.of(Coupon.builder()
+                .code("1111")
+                .discount(BigDecimal.TEN)
+                .minBasketValue(null)
+                .build()));
+
+        final Optional<Basket> result = couponService.apply(basket, "1111");
+
+        assertThat(result).hasValueSatisfying(b -> assertThat(b.isApplicationSuccessful()).isTrue());
     }
 
     @Test
