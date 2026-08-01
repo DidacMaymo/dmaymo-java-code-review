@@ -16,7 +16,7 @@ import schwarz.jobs.interview.coupon.web.dto.CouponRequestDTO;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/coupons")
 @Slf4j
 public class CouponController {
 
@@ -58,7 +58,7 @@ public class CouponController {
      * @param couponRequestDTO the list of coupon codes to look up
      * @return the matching coupons; throws CouponNotFoundException if any code doesn't exist
      */
-    @PostMapping("/coupons/search")
+    @PostMapping("/search")
     public List<CouponDTO> getCoupons(@RequestBody @Valid final CouponRequestDTO couponRequestDTO) {
         return couponService.getCoupons(couponRequestDTO);
     }

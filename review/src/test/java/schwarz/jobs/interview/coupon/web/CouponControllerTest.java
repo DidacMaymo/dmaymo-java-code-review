@@ -57,7 +57,7 @@ class CouponControllerTest {
 
             when(couponService.apply(any(Basket.class), eq("1111"))).thenReturn(appliedBasket);
 
-            mockMvc.perform(post("/api/apply")
+            mockMvc.perform(post("/api/coupons/apply")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
                                 {"code": "1111", "basket": {"value": 100}}
@@ -78,7 +78,7 @@ class CouponControllerTest {
 
             when(couponService.apply(any(Basket.class), eq("1111"))).thenReturn(appliedBasket);
 
-            mockMvc.perform(post("/api/apply")
+            mockMvc.perform(post("/api/coupons/apply")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpect(status().isOk())
@@ -98,7 +98,7 @@ class CouponControllerTest {
 
             when(couponService.apply(any(Basket.class), eq("1111"))).thenReturn(notQualified);
 
-            mockMvc.perform(post("/api/apply")
+            mockMvc.perform(post("/api/coupons/apply")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpect(status().isConflict());
@@ -113,7 +113,7 @@ class CouponControllerTest {
             when(couponService.apply(any(Basket.class), eq("does-not-exist")))
                     .thenThrow(new CouponNotFoundException("does-not-exist"));
 
-            mockMvc.perform(post("/api/apply")
+            mockMvc.perform(post("/api/coupons/apply")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpect(status().isNotFound())
@@ -126,7 +126,7 @@ class CouponControllerTest {
                     .basket(Basket.builder().value(BigDecimal.valueOf(-1)).build())
                     .build();
 
-            mockMvc.perform(post("/api/apply")
+            mockMvc.perform(post("/api/coupons/apply")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpect(status().isBadRequest());
@@ -144,7 +144,7 @@ class CouponControllerTest {
                     .minBasketValue(BigDecimal.valueOf(50))
                     .build();
 
-            mockMvc.perform(post("/api/create")
+            mockMvc.perform(post("/api/coupons/create")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpect(status().isOk());
@@ -160,7 +160,7 @@ class CouponControllerTest {
             doThrow(new DuplicateCouponException("TEST1"))
                     .when(couponService).createCoupon(any(CouponDTO.class));
 
-            mockMvc.perform(post("/api/create")
+            mockMvc.perform(post("/api/coupons/create")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpect(status().isConflict());
@@ -173,7 +173,7 @@ class CouponControllerTest {
                     .discount(BigDecimal.TEN)
                     .build();
 
-            mockMvc.perform(post("/api/create")
+            mockMvc.perform(post("/api/coupons/create")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpect(status().isBadRequest());
