@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import schwarz.jobs.interview.coupon.core.exception.CouponNotFoundException;
 import schwarz.jobs.interview.coupon.core.exception.DuplicateCouponException;
 
 import java.time.Instant;
@@ -17,6 +18,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleDuplicateCoupon(final DuplicateCouponException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse(Instant.now(), HttpStatus.CONFLICT.value(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(CouponNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundCoupon(final CouponNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(Instant.now(), HttpStatus.NOT_FOUND.value(), ex.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

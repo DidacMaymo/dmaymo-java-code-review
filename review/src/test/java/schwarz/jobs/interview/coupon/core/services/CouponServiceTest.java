@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import schwarz.jobs.interview.coupon.core.domain.Coupon;
+import schwarz.jobs.interview.coupon.core.exception.CouponNotFoundException;
 import schwarz.jobs.interview.coupon.core.exception.DuplicateCouponException;
 import schwarz.jobs.interview.coupon.core.repository.CouponRepository;
 import schwarz.jobs.interview.coupon.core.services.model.Basket;
@@ -156,32 +157,41 @@ public class CouponServiceTest {
     }
 
     @Nested
-    class Coupons{
+    class GetCoupons {
 
         @Test
-        public void should_test_get_Coupons() {
-
+        void should_return_coupons_for_given_codes() {
             CouponRequestDTO dto = CouponRequestDTO.builder()
-                .codes(Arrays.asList("1111", "1234"))
-                .build();
+                    .codes(Arrays.asList("1111", "1234"))
+                    .build();
 
-            when(couponRepository.findByCode(any()))
-                .thenReturn(Optional.of(Coupon.builder()
+            when(couponRepository.findByCode("1111")).thenReturn(Optional.of(Coupon.builder()
                     .code("1111")
                     .discount(BigDecimal.TEN)
                     .minBasketValue(BigDecimal.valueOf(50))
-                    .build()))
-                .thenReturn(Optional.of(Coupon.builder()
+                    .build()));
+            when(couponRepository.findByCode("1234")).thenReturn(Optional.of(Coupon.builder()
                     .code("1234")
                     .discount(BigDecimal.TEN)
                     .minBasketValue(BigDecimal.valueOf(50))
                     .build()));
 
-            List<Coupon> returnedCoupons = couponService.getCoupons(dto);
+            List<CouponDTO> returnedCoupons = couponService.getCoupons(dto);
 
             assertThat(returnedCoupons.get(0).getCode()).isEqualTo("1111");
-
             assertThat(returnedCoupons.get(1).getCode()).isEqualTo("1234");
+        }
+
+        @Test
+        void should_throw_when_code_not_found() {
+            CouponRequestDTO dto = CouponRequestDTO.builder()
+                    .codes(List.of("does-not-exist"))
+                    .build();
+
+            when(couponRepository.findByCode("does-not-exist")).thenReturn(Optional.empty());
+
+            assertThatThrownBy(() -> couponService.getCoupons(dto))
+                    .isInstanceOf(CouponNotFoundException.class);
         }
     }
 

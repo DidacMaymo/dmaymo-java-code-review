@@ -67,7 +67,7 @@ public class CouponResource {
     }
 
     @GetMapping("/coupons")
-    public List<Coupon> getCoupons(@RequestBody @Valid final CouponRequestDTO couponRequestDTO) {
+    public List<CouponDTO> getCoupons(@RequestBody @Valid final CouponRequestDTO couponRequestDTO) {
 
         return couponService.getCoupons(couponRequestDTO);
     }

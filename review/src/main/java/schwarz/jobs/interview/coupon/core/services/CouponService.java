@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import schwarz.jobs.interview.coupon.core.domain.Coupon;
+import schwarz.jobs.interview.coupon.core.exception.CouponNotFoundException;
 import schwarz.jobs.interview.coupon.core.exception.DuplicateCouponException;
 import schwarz.jobs.interview.coupon.core.repository.CouponRepository;
 import schwarz.jobs.interview.coupon.core.services.model.Basket;
@@ -63,12 +64,20 @@ public class CouponService {
                 .build();
     }
 
-    public List<Coupon> getCoupons(final CouponRequestDTO couponRequestDTO) {
+    public List<CouponDTO> getCoupons(final CouponRequestDTO couponRequestDTO) {
 
-        final ArrayList<Coupon> foundCoupons = new ArrayList<>();
+        return couponRequestDTO.getCodes().stream()
+                .map(code -> couponRepository.findByCode(code)
+                        .orElseThrow(() -> new CouponNotFoundException(code)))
+                .map(this::toCouponDTO)
+                .toList();
+    }
 
-        couponRequestDTO.getCodes().forEach(code -> foundCoupons.add(couponRepository.findByCode(code).get()));
-
-        return foundCoupons;
+    private CouponDTO toCouponDTO(final Coupon coupon) {
+        return CouponDTO.builder()
+                .code(coupon.getCode())
+                .discount(coupon.getDiscount())
+                .minBasketValue(coupon.getMinBasketValue())
+                .build();
     }
 }

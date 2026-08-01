@@ -2,7 +2,7 @@ package schwarz.jobs.interview.coupon.web.dto;
 
 import java.util.List;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,7 +10,7 @@ import lombok.Data;
 @Builder
 public class CouponRequestDTO {
 
-    @NotNull
+    @NotEmpty
     private List<String> codes;
 
 }
