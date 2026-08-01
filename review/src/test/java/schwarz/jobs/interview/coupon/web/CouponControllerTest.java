@@ -48,6 +48,24 @@ class CouponControllerTest {
         }
 
         @Test
+        void should_return_200_when_request_omits_computed_fields() throws Exception {
+            final Basket appliedBasket = Basket.builder()
+                    .value(BigDecimal.valueOf(90))
+                    .appliedDiscount(BigDecimal.TEN)
+                    .applicationSuccessful(true)
+                    .build();
+
+            when(couponService.apply(any(Basket.class), eq("1111"))).thenReturn(appliedBasket);
+
+            mockMvc.perform(post("/api/apply")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                {"code": "1111", "basket": {"value": 100}}
+                                """))
+                    .andExpect(status().isOk());
+        }
+
+        @Test
         void should_return_200_when_coupon_applied() throws Exception {
             final ApplicationRequestDTO request = validApplicationRequest()
                     .build();

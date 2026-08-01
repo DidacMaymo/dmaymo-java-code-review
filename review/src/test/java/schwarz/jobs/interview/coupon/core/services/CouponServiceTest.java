@@ -91,7 +91,7 @@ public class CouponServiceTest {
             final Basket optionalBasket = couponService.apply(basket, "1111");
 
             assertThat(optionalBasket.getAppliedDiscount()).isEqualTo(BigDecimal.TEN);
-            assertThat(optionalBasket.isApplicationSuccessful()).isTrue();
+            assertThat(optionalBasket.getApplicationSuccessful()).isTrue();
         }
 
         @Test
@@ -108,7 +108,7 @@ public class CouponServiceTest {
 
             final Basket result = couponService.apply(basket, "1111");
 
-            assertThat(result.isApplicationSuccessful()).isFalse();
+            assertThat(result.getApplicationSuccessful()).isFalse();
             assertThat(result).isEqualTo(basket);
             assertThat(result.getAppliedDiscount()).isNull();
         }
@@ -127,7 +127,7 @@ public class CouponServiceTest {
 
             final Basket result = couponService.apply(basket, "1111");
 
-            assertThat(result.isApplicationSuccessful()).isFalse();
+            assertThat(result.getApplicationSuccessful()).isFalse();
             assertThat(result).isEqualTo(basket);
             assertThat(result.getAppliedDiscount()).isNull();
 
@@ -147,7 +147,7 @@ public class CouponServiceTest {
 
             final Basket result = couponService.apply(basket, "1111");
 
-            assertThat(result.isApplicationSuccessful()).isTrue();
+            assertThat(result.getApplicationSuccessful()).isTrue();
         }
 
         @Test

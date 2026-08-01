@@ -41,6 +41,8 @@ public class CouponService {
 
         if (qualifies) {
             basket.applyDiscount(coupon.getDiscount());
+        } else {
+            basket.setApplicationSuccessful(false);
         }
 
         return basket;

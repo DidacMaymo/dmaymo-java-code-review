@@ -33,7 +33,7 @@ public class CouponController {
         @RequestBody @Valid final ApplicationRequestDTO applicationRequestDTO) {
         log.info("Applying coupon");
         final Basket basket = couponService.apply(applicationRequestDTO.getBasket(), applicationRequestDTO.getCode());
-        if (!basket.isApplicationSuccessful()) {
+        if (!basket.getApplicationSuccessful()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         log.info("Applied coupon");

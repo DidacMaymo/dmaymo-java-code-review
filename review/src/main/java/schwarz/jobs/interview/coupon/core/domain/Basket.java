@@ -21,7 +21,7 @@ public class Basket {
 
     private BigDecimal appliedDiscount;
 
-    private boolean applicationSuccessful;
+    private Boolean applicationSuccessful;
 
     public void applyDiscount(final BigDecimal discount) {
         if (discount == null) {
