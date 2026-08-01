@@ -22,11 +22,7 @@ class CouponDTOValidationTest {
 
     @Test
     void should_accept_valid_coupon() {
-        final CouponDTO dto = CouponDTO.builder()
-                .code("TEST1")
-                .discount(BigDecimal.TEN)
-                .minBasketValue(BigDecimal.valueOf(50))
-                .build();
+        final CouponDTO dto = validCoupon().build();
 
         assertThat(validator.validate(dto)).isEmpty();
     }
