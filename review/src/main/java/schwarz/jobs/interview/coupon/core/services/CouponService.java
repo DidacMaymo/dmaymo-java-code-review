@@ -12,7 +12,7 @@ import schwarz.jobs.interview.coupon.core.domain.Coupon;
 import schwarz.jobs.interview.coupon.core.exception.CouponNotFoundException;
 import schwarz.jobs.interview.coupon.core.exception.DuplicateCouponException;
 import schwarz.jobs.interview.coupon.core.repository.CouponRepository;
-import schwarz.jobs.interview.coupon.core.services.model.Basket;
+import schwarz.jobs.interview.coupon.core.domain.Basket;
 import schwarz.jobs.interview.coupon.web.dto.CouponDTO;
 import schwarz.jobs.interview.coupon.web.dto.CouponRequestDTO;
 

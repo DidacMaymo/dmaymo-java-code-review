@@ -2,14 +2,11 @@ package schwarz.jobs.interview.coupon.core.domain;
 
 import java.math.BigDecimal;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.Id;
 
 @Entity
 @Data
@@ -19,6 +16,7 @@ import jakarta.persistence.Id;
 @Table(name = "coupons")
 public class Coupon {
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 

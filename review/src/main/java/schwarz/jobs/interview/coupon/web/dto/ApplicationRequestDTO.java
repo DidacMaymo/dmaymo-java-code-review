@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import schwarz.jobs.interview.coupon.core.services.model.Basket;
+import schwarz.jobs.interview.coupon.core.domain.Basket;
 
 @Data
 @Builder

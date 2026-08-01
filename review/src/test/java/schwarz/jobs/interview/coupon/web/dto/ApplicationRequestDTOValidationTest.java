@@ -5,7 +5,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import schwarz.jobs.interview.coupon.core.services.model.Basket;
+import schwarz.jobs.interview.coupon.core.domain.Basket;
 
 import java.math.BigDecimal;
 import java.util.Set;

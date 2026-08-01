@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import schwarz.jobs.interview.coupon.core.services.CouponService;
-import schwarz.jobs.interview.coupon.core.services.model.Basket;
+import schwarz.jobs.interview.coupon.core.domain.Basket;
 import schwarz.jobs.interview.coupon.web.dto.ApplicationRequestDTO;
 import schwarz.jobs.interview.coupon.web.dto.CouponDTO;
 import schwarz.jobs.interview.coupon.web.dto.CouponRequestDTO;
@@ -44,7 +44,7 @@ public class CouponController {
      * Creates a new coupon.
      *
      * @param couponDTO the coupon data to create
-     * @return 201 with a Location header pointing to the created coupon
+     * @return 200 if coupon created succesfully
      */
     @PostMapping("/create")
     public ResponseEntity<Void> create(@RequestBody @Valid final CouponDTO couponDTO) {

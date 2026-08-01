@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import schwarz.jobs.interview.coupon.core.exception.CouponNotFoundException;
 import schwarz.jobs.interview.coupon.core.exception.DuplicateCouponException;
 import schwarz.jobs.interview.coupon.core.services.CouponService;
-import schwarz.jobs.interview.coupon.core.services.model.Basket;
+import schwarz.jobs.interview.coupon.core.domain.Basket;
 import schwarz.jobs.interview.coupon.web.dto.ApplicationRequestDTO;
 import schwarz.jobs.interview.coupon.web.dto.CouponDTO;
 import schwarz.jobs.interview.coupon.web.dto.CouponRequestDTO;
@@ -41,7 +41,7 @@ class CouponControllerTest {
     @Nested
     class Apply {
 
-        private ApplicationRequestDTO.ApplicationRequestDTOBuilder validCApplicationRequest() {
+        private ApplicationRequestDTO.ApplicationRequestDTOBuilder validApplicationRequest() {
             return ApplicationRequestDTO.builder()
                     .code("1111")
                     .basket(Basket.builder().value(BigDecimal.valueOf(100)).build());
@@ -49,7 +49,7 @@ class CouponControllerTest {
 
         @Test
         void should_return_200_when_coupon_applied() throws Exception {
-            final ApplicationRequestDTO request = validCApplicationRequest()
+            final ApplicationRequestDTO request = validApplicationRequest()
                     .build();
 
             final Basket appliedBasket = Basket.builder()
@@ -70,7 +70,7 @@ class CouponControllerTest {
 
         @Test
         void should_return_409_when_basket_does_not_qualify() throws Exception {
-            final ApplicationRequestDTO request = validCApplicationRequest()
+            final ApplicationRequestDTO request = validApplicationRequest()
                     .build();
 
             final Basket notQualified = Basket.builder()
@@ -88,7 +88,7 @@ class CouponControllerTest {
 
         @Test
         void should_return_404_when_coupon_not_found() throws Exception {
-            final ApplicationRequestDTO request = validCApplicationRequest()
+            final ApplicationRequestDTO request = validApplicationRequest()
                     .code("does-not-exist")
                     .build();
 
@@ -104,7 +104,7 @@ class CouponControllerTest {
 
         @Test
         void should_return_400_when_basket_value_is_negative() throws Exception {
-            final ApplicationRequestDTO request = validCApplicationRequest()
+            final ApplicationRequestDTO request = validApplicationRequest()
                     .basket(Basket.builder().value(BigDecimal.valueOf(-1)).build())
                     .build();
 
