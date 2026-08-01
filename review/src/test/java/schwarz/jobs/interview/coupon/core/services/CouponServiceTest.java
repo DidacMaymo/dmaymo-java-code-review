@@ -88,12 +88,10 @@ public class CouponServiceTest {
                     .minBasketValue(BigDecimal.valueOf(50))
                     .build()));
 
-            final Optional<Basket> optionalBasket = couponService.apply(basket, "1111");
+            final Basket optionalBasket = couponService.apply(basket, "1111");
 
-            assertThat(optionalBasket).hasValueSatisfying(b -> {
-                assertThat(b.getAppliedDiscount()).isEqualTo(BigDecimal.TEN);
-                assertThat(b.isApplicationSuccessful()).isTrue();
-            });
+            assertThat(optionalBasket.getAppliedDiscount()).isEqualTo(BigDecimal.TEN);
+            assertThat(optionalBasket.isApplicationSuccessful()).isTrue();
         }
 
         @Test
@@ -108,13 +106,11 @@ public class CouponServiceTest {
                     .minBasketValue(BigDecimal.valueOf(50))
                     .build()));
 
-            final Optional<Basket> result = couponService.apply(basket, "1111");
+            final Basket result = couponService.apply(basket, "1111");
 
-            assertThat(result).hasValueSatisfying(b -> {
-                assertThat(b).isEqualTo(basket);
-                assertThat(b.isApplicationSuccessful()).isFalse();
-                assertThat(b.getAppliedDiscount()).isNull();
-            });
+            assertThat(result.isApplicationSuccessful()).isFalse();
+            assertThat(result).isEqualTo(basket);
+            assertThat(result.getAppliedDiscount()).isNull();
         }
 
         @Test
@@ -129,13 +125,12 @@ public class CouponServiceTest {
                     .minBasketValue(BigDecimal.valueOf(50))
                     .build()));
 
-            final Optional<Basket> result = couponService.apply(basket, "1111");
+            final Basket result = couponService.apply(basket, "1111");
 
-            assertThat(result).hasValueSatisfying(b -> {
-                assertThat(b.isApplicationSuccessful()).isFalse();
-                assertThat(b).isEqualTo(basket);
-                assertThat(b.getAppliedDiscount()).isNull();
-            });
+            assertThat(result.isApplicationSuccessful()).isFalse();
+            assertThat(result).isEqualTo(basket);
+            assertThat(result.getAppliedDiscount()).isNull();
+
         }
 
         @Test
@@ -150,9 +145,22 @@ public class CouponServiceTest {
                     .minBasketValue(null)
                     .build()));
 
-            final Optional<Basket> result = couponService.apply(basket, "1111");
+            final Basket result = couponService.apply(basket, "1111");
 
-            assertThat(result).hasValueSatisfying(b -> assertThat(b.isApplicationSuccessful()).isTrue());
+            assertThat(result.isApplicationSuccessful()).isTrue();
+        }
+
+        @Test
+        void should_throw_when_coupon_not_found(){
+            final Basket basket = Basket.builder()
+                    .value(BigDecimal.valueOf(100))
+                    .build();
+
+            when(couponRepository.findByCode("does-not-exist")).thenReturn(Optional.empty());
+
+            assertThatThrownBy(() -> couponService.apply(basket, "does-not-exist"))
+                    .isInstanceOf(CouponNotFoundException.class);
+
         }
     }
 

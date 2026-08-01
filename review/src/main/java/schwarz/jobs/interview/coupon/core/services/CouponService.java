@@ -1,7 +1,6 @@
 package schwarz.jobs.interview.coupon.core.services;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,32 +27,32 @@ public class CouponService {
         return couponRepository.findByCode(code);
     }
 
-    public Optional<Basket> apply(final Basket basket, final String code) {
+    public Basket apply(final Basket basket, final String code) {
 
-        return getCoupon(code).map(coupon -> {
+        final Coupon coupon = getCoupon(code)
+                .orElseThrow(() -> new CouponNotFoundException(code));
 
-            final BigDecimal minRequired = coupon.getMinBasketValue() != null
-                    ? coupon.getMinBasketValue()
-                    : BigDecimal.ZERO;
+        final BigDecimal minRequired = coupon.getMinBasketValue() != null
+                ? coupon.getMinBasketValue()
+                : BigDecimal.ZERO;
 
-            final boolean qualifies = basket.getValue().compareTo(BigDecimal.ZERO) > 0
-                    && basket.getValue().compareTo(minRequired) >= 0;
+        final boolean qualifies = basket.getValue().compareTo(BigDecimal.ZERO) > 0
+                && basket.getValue().compareTo(minRequired) >= 0;
 
-            if (qualifies) {
-                basket.applyDiscount(coupon.getDiscount());
-            }
+        if (qualifies) {
+            basket.applyDiscount(coupon.getDiscount());
+        }
 
-            return basket;
-        });
+        return basket;
     }
 
-    public Coupon createCoupon(final CouponDTO couponDTO) {
+    public void createCoupon(final CouponDTO couponDTO) {
 
         if (couponRepository.findByCode(couponDTO.getCode()).isPresent()) {
             throw new DuplicateCouponException(couponDTO.getCode());
         }
 
-        return couponRepository.save(toCoupon(couponDTO));
+        couponRepository.save(toCoupon(couponDTO));
     }
 
     private Coupon toCoupon(final CouponDTO couponDTO) {
